@@ -1,0 +1,34 @@
+=== Pharmacy Globals
+- Balance
+- Name
+- Domain
+- 
+
+// Data Base
+= Admin
+- Name
+- mail
+- password
+- 
+
+= Pharmist
+- Name
+- mail
+- password
+- Adress
+- Salart
+
+= user
+** on the platform
+    - name
+    - mail
+    - password
+    - 
+
+= product
+    - id
+    - case | tape
+    - price
+    - quantity
+    - Mark
+    -
