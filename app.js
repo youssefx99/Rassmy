@@ -4,6 +4,10 @@ const app = express();
 
 const jobRouter = require("./src/routes/jobRoute");
 
+connect(process.env.DATABASE);
+
+app.use(express.json());
+
 app.use("/jobs", jobRouter);
 
 module.exports = app;
