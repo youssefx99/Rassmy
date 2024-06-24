@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const adminSchema = new mongoose.Schema({
+const companySchema = new mongoose.Schema({
   name: {
     type: String,
     require: [true, "please inseart name"],
@@ -27,7 +27,17 @@ const adminSchema = new mongoose.Schema({
       message: "passwords are not the same",
     },
   },
+  size:{
+    type: Number,
+    default: 0
+  },
+  field:{
+    type: String,
+    require:[true, "comapny filed is a must"]
+  }, 
+
+  // add dataType of employees
 });
 
-const Admin = mongoose.model(adminSchema, "Admin");
-module.exports = Admin;
+const Company = mongoose.model(companySchema, "Company");
+module.exports = Company;

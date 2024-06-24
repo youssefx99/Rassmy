@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     require: [true, "please inseart name"],
   },
+  role: {
+    type: String,
+    enum: ["user", "employee", "admin"],
+    default: "user",
+  },
   email: {
     type: String,
     requrie: true,
@@ -26,6 +31,19 @@ const userSchema = new mongoose.Schema({
       },
       message: "passwords are not the same",
     },
+  },
+  address: {
+    type: String,
+  },
+  job: {
+    type: String,
+  },
+  field: {
+    type: String,
+  },
+  CV: {
+    type: Buffer,
+    contentType: String,
   },
 });
 
