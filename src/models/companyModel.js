@@ -4,22 +4,22 @@ const validator = require("validator");
 const companySchema = new mongoose.Schema({
   name: {
     type: String,
-    require: [true, "please inseart name"],
+    required: [true, "please inseart name"],
   },
   email: {
     type: String,
-    requrie: true,
+    required: true,
     unique: true,
     lowercase: true,
     validate: [validator.isEmail, "please enter a valid mail"],
   },
   password: {
     type: string,
-    requrie: [true, "password is require"],
+    required: [true, "password is require"],
   },
   passwordConfim: {
     type: string,
-    requrie: [true, "password is require"],
+    required: [true, "password is require"],
     validate: {
       validator: function (el) {
         return this.password === el;
@@ -27,14 +27,14 @@ const companySchema = new mongoose.Schema({
       message: "passwords are not the same",
     },
   },
-  size:{
+  size: {
     type: Number,
-    default: 0
+    default: 0,
   },
-  field:{
+  field: {
     type: String,
-    require:[true, "comapny filed is a must"]
-  }, 
+    required: [true, "comapny filed is a must"],
+  },
 
   // add dataType of employees
 });

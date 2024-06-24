@@ -3,15 +3,15 @@ const mongoose = require("mongoose");
 const jobSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: [true, "Job name is requried"],
+    required: [true, "Job name is required"],
   },
-  Company: {
+  company: {
     type: String,
-    require: [true, "Job mark is requried"],
+    required: [true, "Company name is required"],
   },
   description: {
     type: String,
-    requrie: [true, "Job description is requried"],
+    required: [true, "Job description is required"],
   },
   skills: {
     type: [String],
@@ -24,6 +24,6 @@ const jobSchema = new mongoose.Schema({
   },
 });
 
-const Job = mongoose.model(jobSchema, "Job");
+const Job = mongoose.model("Job", jobSchema);
 
-model.exports = Job;
+module.exports = Job;
