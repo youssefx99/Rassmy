@@ -7,3 +7,6 @@ Security
 
 implpement async funcs
 implpement errors funcs
+
+
+- add job title to job model to assign it to user when accepted in the job

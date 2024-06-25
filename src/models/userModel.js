@@ -4,7 +4,7 @@ const validator = require("validator");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: [true, "please inseart name"],
+    required: [true, "please inseart name"],
   },
   role: {
     type: String,
@@ -13,18 +13,18 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    requrie: true,
+    requried: true,
     unique: true,
     lowercase: true,
     validate: [validator.isEmail, "please enter a valid mail"],
   },
   password: {
-    type: string,
-    requrie: [true, "password is require"],
+    type: String,
+    requried: [true, "password is require"],
   },
   passwordConfim: {
-    type: string,
-    requrie: [true, "password is require"],
+    type: String,
+    requried: [true, "password is require"],
     validate: {
       validator: function (el) {
         return this.password === el;
@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
   address: {
     type: String,
   },
+  company: {
+    type: String,
+    lowercase: true,
+  },
   job: {
     type: String,
   },
@@ -44,8 +48,9 @@ const userSchema = new mongoose.Schema({
   CV: {
     type: Buffer,
     contentType: String,
+    default: null,
   },
 });
 
-const User = mongoose.model(userSchema, "User");
+const User = mongoose.model("User", userSchema);
 module.exports = User;
