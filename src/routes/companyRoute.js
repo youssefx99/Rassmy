@@ -15,6 +15,7 @@ router
 
 router
   .route("/:companyName/employees")
-  .get(companyController.getCompanyEmployee);
+  .get(companyController.getCompanyEmployee)
+  .patch(companyController.adjustEmployee);
 
 module.exports = router;
