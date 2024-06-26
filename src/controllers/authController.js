@@ -57,7 +57,7 @@ exports.login = catchAsync(async (req, res, next) => {
   // 3) If everything ok, send token to client
   createToken(user, 200, req, res);
 
-  console.log(req.user);
+
 });
 
 exports.logout = (req, res) => {
@@ -65,7 +65,7 @@ exports.logout = (req, res) => {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
   });
-  console.log(req.user);
+
 
   res.status(200).json({ status: "success" });
 };
@@ -93,7 +93,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded); // Optional: Log the decoded token
+
   } catch (err) {
     return next(new AppError("Invalid token. Please log in again.", 401));
   }

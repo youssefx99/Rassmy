@@ -47,7 +47,6 @@ exports.getAllCompany = catchAsync(async (req, res, next) => {
 exports.getCompanyEmployee = catchAsync(async (req, res, next) => {
   const companyStr = req.params.companyName.toLowerCase();
 
-  console.log(`Company Name is ${companyStr}`);
   if (!companyStr)
     return next(new AppError(404, "please enter the company name"));
   const users = await User.find({ company: companyStr });
