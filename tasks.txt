@@ -1,9 +1,28 @@
 
 
 
+Authentecation:
+- Sign Up 
+- Login 
+- logout
+- protect
+- isLogedIn
+- restrictTo
+- update password
+- Reset Password
+- forget Password
+- 
+
 
 
 Security
+cookies
+
+
+# Email functionsss
+-
+-
+-
 
 implpement async funcs   / 
 implpement errors funcs  /
