@@ -5,7 +5,7 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: [true, "Job name is required"],
   },
-  tittle: {
+  title: {
     type: String,
     required: [true, "Job name is required"],
   },

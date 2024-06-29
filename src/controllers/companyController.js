@@ -124,7 +124,7 @@ exports.acceptApplication = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "Job not found"));
   }
 
-  user.job = job.title;
+  user.job = job.tittle;
   user.company = company.name;
   user.role = "employee";
   user.field = [...new Set([...user.field, ...job.fields])];
@@ -137,6 +137,35 @@ exports.acceptApplication = catchAsync(async (req, res, next) => {
   return res.status(200).json({
     status: "success",
     message: "The user has been successfully accepted for the job.",
+  });
+});
+
+exports.offerJobToUser = catchAsync(async (req, res, next) => {
+  const { jobId } = req.params;
+  const { email } = req.body;
+
+  // Find the user by email
+  const user = await User.findOne({ email });
+  if (!user) {
+    return next(new AppError(404, "User not found"));
+  }
+
+  // Find the job by ID
+  const job = await Job.findById(jobId);
+  if (!job) {
+    return next(new AppError(404, "Job not found"));
+  }
+
+  // Offer the job to the user (custom logic as needed)
+  user.offeredJobs = user.offeredJobs || [];
+  user.offeredJobs.push(job._id);
+
+  // Save the user
+  await user.save();
+
+  return res.status(200).json({
+    status: "success",
+    message: "Job offered to user successfully",
   });
 });
 

@@ -130,11 +130,11 @@ exports.applyOnJob = catchAsync(async (req, res, next) => {
   const userId = req.model._id;
   const job = await Job.findById(jobId);
 
-  if (job.applyedByUsers.includes(userId)) {
+  if (job.appliedByUsers.includes(userId)) {
     return next(new AppError(400, "You have already applied for this job"));
   }
 
-  await Job.updateOne({ _id: jobId }, { $push: { applyedByUsers: userId } });
+  await Job.updateOne({ _id: jobId }, { $push: { appliedByUsers: userId } });
 
   await User.updateOne({ _id: userId }, { $push: { applyedJobs: jobId } });
 

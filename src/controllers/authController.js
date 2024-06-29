@@ -57,6 +57,8 @@ exports.login = catchAsync(async (req, res, next) => {
     model = await Company.findOne({ email }).select("+password");
   }
 
+  console.log(model);
+
   if (!model || !(await model.correctPassword(password, model.password))) {
     return next(new AppError("Incorrect email or password", 401));
   }

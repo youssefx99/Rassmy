@@ -1,25 +1,25 @@
 
 Company Functions:
-- show Employees    
-- CRUD on jobs      
-- show offers of jobs
-- adjust employee
+- show Employees    /
+- CRUD on jobs      /
+- show offers of jobs   /
+- adjust employee   
     - edit price, edit position, fire
 
 Advance:
-- offer on user a job
+- offer on user a job   //
 - message employee
 
 
 
 User Functions:
-- search Companies
-- see company info
-- search jobs & filter()
-- search job of company
-- save job
+- search Companies  /
+- see company info  /
+- search jobs & filter()    
+- search job of company /
+- save job  /
 - share job
-- apply on job
+- apply on job  /
 - see it's offers and status
 
 Advance

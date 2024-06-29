@@ -41,14 +41,23 @@ const companySchema = new mongoose.Schema({
   // add dataType of employees
 });
 
-// companySchema.pre("save", async function (next) {
-//   // Hash the password with cost of 12
-//   this.password = await bcrypt.hash(this.password, 12);
+companySchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
 
-//   // Delete passwordConfirm field
-//   this.passwordConfirm = undefined;
-//   next();
-// });
+  // Hash the password with cost of 12
+  this.password = await bcrypt.hash(this.password, 12);
+
+  // Delete passwordConfirm field
+  this.passwordConfirm = undefined;
+  next();
+});
+
+companySchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
 
 companySchema.methods.correctPassword = async function (
   enteredPassword,

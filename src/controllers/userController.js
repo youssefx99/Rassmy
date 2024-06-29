@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Job = require("../models/jobModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
@@ -52,5 +53,40 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
     status: "success",
     size: user.length,
     data: user,
+  });
+});
+
+exports.acceptJobOffer = catchAsync(async (req, res, next) => {
+  const { jobId } = req.params;
+  const user = req.model;
+  console.log(user);
+
+  // Find the job in the user's offered jobs
+  const jobIndex = user.offeredJobs.indexOf(jobId);
+  if (jobIndex === -1) {
+    return next(new AppError(404, "Job offer not found"));
+  }
+
+  // Find the job details
+  const job = await Job.findById(jobId);
+  if (!job) {
+    return next(new AppError(404, "Job not found"));
+  }
+
+  // Update user details
+  user.company = job.company;
+  user.role = "employee";
+  user.title = job.title;
+  user.field = [...new Set([...user.field, ...job.fields])];
+
+  // Remove the accepted job from offered jobs
+  user.offeredJobs.splice(jobIndex, 1);
+
+  // Save user
+  await user.save();
+
+  return res.status(200).json({
+    status: "success",
+    message: "You have successfully accepted the job offer.",
   });
 });
