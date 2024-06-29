@@ -1,5 +1,6 @@
 const Company = require("../models/companyModel");
 const User = require("../models/userModel");
+const Job = require("../models/jobModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const returnRequest = require("../utils/returnRequest");
@@ -79,3 +80,64 @@ exports.adjustEmployee = catchAsync(async (req, res, next) => {
   // Call the correct function name with `res` as the first argument
   returnRequest(res, 200, "success", updatedUser);
 });
+
+exports.getJobAppliactions = catchAsync(async (req, res, next) => {
+  const jobId = req.params.jobId;
+  const company = req.model;
+
+  if (!company.jobs.includes(jobId))
+    return next(new AppError(404, "Company hasn't this Job ID"));
+
+  // Fetch the job by its ID and populate the 'appliedByUsers' field
+  const job = await Job.findById(jobId).populate("appliedByUsers");
+
+  if (!job) {
+    return returnRequest(res, 404, "error", "Job not found");
+  }
+
+  const applications = job.appliedByUsers.map((user) => ({
+    userName: user.name,
+    email: user.email,
+    address: user.address,
+    company: user.company,
+    job: user.job,
+    fidld: user.field,
+    CV: user.CV,
+  }));
+
+  return returnRequest(res, 200, "success", {
+    length: applications.length,
+    applications,
+  });
+});
+
+exports.acceptApplication = catchAsync(async (req, res, next) => {
+  const company = req.model;
+  const user = await User.findOne({ email: req.body.email });
+  const job = await Job.findById(req.params.jobId);
+
+  if (!user) {
+    return next(new AppError(404, "The usre is not an canditate for this job"));
+  }
+
+  if (!job) {
+    return next(new AppError(404, "Job not found"));
+  }
+
+  user.job = job.title;
+  user.company = company.name;
+  user.role = "employee";
+  user.field = [...new Set([...user.field, ...job.fields])];
+
+  company.size++;
+
+  await user.save();
+  await company.save({ validateBeforeSave: false });
+
+  return res.status(200).json({
+    status: "success",
+    message: "The user has been successfully accepted for the job.",
+  });
+});
+
+exports.getCompanyJobs = catchAsync(async (req, res, next) => {});

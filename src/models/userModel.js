@@ -44,9 +44,11 @@ const userSchema = new mongoose.Schema({
   job: {
     type: String,
   },
-  field: {
-    type: String,
-  },
+  field: [
+    {
+      type: String,
+    },
+  ],
   CV: {
     type: Buffer,
     contentType: String,
@@ -60,7 +62,19 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+  applyedJobs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Job",
+    },
+  ],
   savedJobs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Job",
+    },
+  ],
+  sharedJobs: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Job",

@@ -4,7 +4,9 @@ const companyController = require("../controllers/companyController");
 const authController = require("../controllers/authController");
 const jobRouter = require("../routes/jobRoute");
 
+router.use(authController.protect);
 
+router.use("/jobs", jobRouter);
 
 router
   .route("/")
@@ -17,11 +19,12 @@ router
   .patch(companyController.updateCompany)
   .delete(companyController.deleteCompany);
 
+router.get("/:jobId/applications", companyController.getJobAppliactions);
+router.get("/:jobId/accept", companyController.acceptApplication);
+
 router
   .route("/:companyName/employees")
   .get(companyController.getCompanyEmployee)
   .patch(companyController.adjustEmployee);
-
-router.use("/:companyId/jobs", jobRouter);
 
 module.exports = router;

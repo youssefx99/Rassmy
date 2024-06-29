@@ -7,7 +7,7 @@ router.use(authController.protect);
 
 router
   .route("/")
-  .get(jobController.getAllJobs)
+  .get(jobController.getCompanyJobs)
   .post(jobController.createCompanyJob);
 
 router
@@ -18,7 +18,11 @@ router
 
 router.patch("/:id/save", jobController.saveJob);
 router.patch("/:id/share", jobController.shareJob);
-router.post("/:id/apply", jobController.applyOnJob);
+router.post(
+  "/:id/apply",
+  //   authController.restrictTo(["user", "admin", "employee"]),
+  jobController.applyOnJob
+);
 router.get("/:id/status", jobController.getApplicationStatus);
 
 module.exports = router;

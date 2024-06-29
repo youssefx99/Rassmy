@@ -5,6 +5,10 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: [true, "Job name is required"],
   },
+  tittle: {
+    type: String,
+    required: [true, "Job name is required"],
+  },
   company: {
     type: String,
     required: [true, "Company name is required"],
@@ -22,7 +26,13 @@ const jobSchema = new mongoose.Schema({
   price: {
     type: Number,
   },
-  ApplyedByUsers: [
+  appliedByUsers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  savedByUsers: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

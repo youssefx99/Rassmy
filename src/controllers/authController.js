@@ -75,7 +75,6 @@ exports.logout = (req, res) => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-
   // 1) Getting token and check if it's there
   let token;
   if (
@@ -102,8 +101,14 @@ exports.protect = catchAsync(async (req, res, next) => {
     return next(new AppError("Invalid token. Please log in again.", 401));
   }
 
-  let model =
-    (await User.findById(decoded.id)) || (await Company.findById(decoded.id));
+  let model = await User.findById(decoded.id);
+
+  if (model) {
+    req.isUser = 1;
+  } else {
+    model = await Company.findById(decoded.id);
+    req.isCompany = 1;
+  }
 
   if (!model) {
     return next(
@@ -128,8 +133,10 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
+    console.log(req.model);
+
     // roles ['admin', 'lead-guide']. role='user'
-    if (!roles.includes(req.user.role)) {
+    if (!roles.includes(req.model.role)) {
       return next(
         new AppError("You do not have permission to perform this action", 403)
       );

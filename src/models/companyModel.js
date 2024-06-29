@@ -19,7 +19,7 @@ const companySchema = new mongoose.Schema({
     type: String,
     required: [true, "password is require"],
   },
-  passwordConfim: {
+  passwordConfirm: {
     type: String,
     required: [true, "password is require"],
     validate: {
