@@ -60,6 +60,12 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+  savedJobs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Job",
+    },
+  ],
 });
 
 userSchema.pre(/^find/, function (next) {

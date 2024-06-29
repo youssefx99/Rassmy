@@ -22,6 +22,12 @@ const jobSchema = new mongoose.Schema({
   price: {
     type: Number,
   },
+  ApplyedByUsers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 const Job = mongoose.model("Job", jobSchema);

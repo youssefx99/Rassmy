@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 const companySchema = new mongoose.Schema({
   name: {
@@ -35,9 +37,38 @@ const companySchema = new mongoose.Schema({
     type: [String],
     required: [true, "comapny filed is a must"],
   },
-
+  jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
   // add dataType of employees
 });
+
+// companySchema.pre("save", async function (next) {
+//   // Hash the password with cost of 12
+//   this.password = await bcrypt.hash(this.password, 12);
+
+//   // Delete passwordConfirm field
+//   this.passwordConfirm = undefined;
+//   next();
+// });
+
+companySchema.methods.correctPassword = async function (
+  enteredPassword,
+  userPassword
+) {
+  return await bcrypt.compare(enteredPassword, userPassword);
+};
+
+companySchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 100000;
+
+  return resetToken;
+};
 
 const Company = mongoose.model("Company", companySchema);
 module.exports = Company;

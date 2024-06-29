@@ -1,10 +1,10 @@
 
 Company Functions:
-- show Employees
-- CRUD on jobs
+- show Employees    
+- CRUD on jobs      
 - show offers of jobs
 - adjust employee
-    - add price, edit position, fire
+    - edit price, edit position, fire
 
 Advance:
 - offer on user a job
@@ -28,11 +28,6 @@ Advance
 
 
 
-
-
-
-
-
 Authentecation:
 - Sign Up /
 - Login   /
@@ -43,7 +38,7 @@ Authentecation:
 - update password /
 - Reset Password    /
 - forget Password   /
-- 
+
 
 
 

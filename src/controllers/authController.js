@@ -3,8 +3,10 @@ const jwt = require("jsonwebtoken");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
+const Company = require("../models/companyModel");
 const sendEmail = require("../utils/email.js");
 const { promisify } = require("util");
+const { decode } = require("punycode");
 //const sendRequest = require("../utils/returnRequest");
 
 const createToken = (user, statusCode, req, res) => {
@@ -47,17 +49,20 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!email || !password) {
     return next(new AppError("Please provide email and password!", 400));
   }
-  // 2) Check if user exists && password is correct
-  const user = await User.findOne({ email }).select("+password");
 
-  if (!user || !(await user.correctPassword(password, user.password))) {
+  let model;
+  model = await User.findOne({ email }).select("+password");
+
+  if (!model) {
+    model = await Company.findOne({ email }).select("+password");
+  }
+
+  if (!model || !(await model.correctPassword(password, model.password))) {
     return next(new AppError("Incorrect email or password", 401));
   }
 
   // 3) If everything ok, send token to client
-  createToken(user, 200, req, res);
-
-
+  createToken(model, 200, req, res);
 });
 
 exports.logout = (req, res) => {
@@ -66,13 +71,13 @@ exports.logout = (req, res) => {
     httpOnly: true,
   });
 
-
   res.status(200).json({ status: "success" });
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
+
   // 1) Getting token and check if it's there
-  let token = "hello";
+  let token;
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer ")
@@ -93,14 +98,14 @@ exports.protect = catchAsync(async (req, res, next) => {
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
-
   } catch (err) {
     return next(new AppError("Invalid token. Please log in again.", 401));
   }
 
-  // 3) Check if user still exists
-  const currentUser = await User.findById(decoded.id);
-  if (!currentUser) {
+  let model =
+    (await User.findById(decoded.id)) || (await Company.findById(decoded.id));
+
+  if (!model) {
     return next(
       new AppError(
         "The user belonging to this token does no longer exist.",
@@ -116,7 +121,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   // }
 
   // GRANT ACCESS TO PROTECTED ROUTE
-  req.user = currentUser;
+  req.model = model;
+
   next();
 });
 

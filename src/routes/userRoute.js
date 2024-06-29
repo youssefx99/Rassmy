@@ -7,10 +7,12 @@ router.post("/signup", authController.signUp);
 router.post("/login", authController.login);
 router.get("/logout", authController.logout);
 
+
+
 router
   .route("/")
   .get(userController.getAllUser)
-  .post(userController.createUser);
+  .post(authController.protect, userController.createUser);
 
 router
   .route("/:id")
@@ -20,7 +22,7 @@ router
 
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);
-
 router.patch("/updateMyPassword", authController.updatePassword);
+
 
 module.exports = router;

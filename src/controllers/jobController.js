@@ -1,4 +1,5 @@
 const Job = require("../models/jobModel");
+const Company = require("../models/companyModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
@@ -54,3 +55,26 @@ exports.deleteJob = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+// ################################################################
+
+exports.createCompanyJob = catchAsync(async (req, res, next) => {
+  console.log(req.model);
+  const job = await Job.create(req.body);
+  req.model.jobs.push(job._id);
+  console.log(req.model.jobs);
+  await Company.updateOne({ _id: req.model._id }, { $push: { jobs: job._id } });
+
+  return res.status(201).json({
+    status: "success",
+    data: job,
+  });
+});
+
+exports.getCompanyJobs = catchAsync(async (req, res, next) => {
+  const compoanyID = req.params.companyId;
+});
+
+exports.saveJob = catchAsync(async (req, res, next) => {});
+exports.shareJob = catchAsync(async (req, res, next) => {});
+exports.applyOnJob = catchAsync(async (req, res, next) => {});
+exports.getApplicationStatus = catchAsync(async (req, res, next) => {});
