@@ -7,7 +7,7 @@ router.use(authController.protect);
 
 router
   .route("/")
-  .get(jobController.getCompanyJobs)
+  .get(jobController.getAllJobs)
   .post(jobController.createCompanyJob);
 
 router

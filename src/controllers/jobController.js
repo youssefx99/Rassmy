@@ -3,6 +3,7 @@ const Company = require("../models/companyModel");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const { compare } = require("bcryptjs");
 
 exports.getJob = catchAsync(async (req, res, next) => {
   const job = await Job.findOne(req.body.id);
@@ -14,6 +15,36 @@ exports.getJob = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllJobs = catchAsync(async (req, res, next) => {
+  const queryParams = req.query;
+
+  const queryObj = {};
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (value) {
+      queryObj[key] = value;
+    }
+  }
+
+  // TODO = add more filtering options
+
+  const jobs = await Job.find(queryObj);
+
+  const theJobs = jobs.map((job) => ({
+    name: job.name,
+    company: job.company,
+    description: job.description,
+    skills: job.skills,
+    fields: job.fields,
+    price: job.price,
+  }));
+
+  res.status(200).json({
+    status: "success",
+    length: jobs.length,
+    data: theJobs,
+  });
+});
+
+exports.getUserJobs = catchAsync(async (req, res, next) => {
   const { jobCategory } = req.query;
 
   if (!jobCategory) {
@@ -90,7 +121,7 @@ exports.getCompanyJobs = catchAsync(async (req, res, next) => {
   const company = await Company.findById(companyID).populate("jobs");
 
   if (!company) {
-    return next(new AppError(404, "No Compant found"));
+    return next(new AppError(404, "No Company found"));
   }
 
   if (company.jobs.length === 0) {
@@ -116,8 +147,6 @@ exports.saveJob = catchAsync(async (req, res, next) => {
   await Job.updateOne({ _id: jobId }, { $push: { savedByUsers: userId } });
 
   await User.updateOne({ _id: userId }, { $push: { savedJobs: jobId } });
-
-  // if apply before error
 
   return res.status(200).json({
     status: "success",
