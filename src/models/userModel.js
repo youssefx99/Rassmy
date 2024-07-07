@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const { NONAME } = require("dns");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -42,8 +43,8 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   company: {
-    type: String,
-    lowercase: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
   },
   job: {
     type: String,

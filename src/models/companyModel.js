@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const { type } = require("os");
 
 const companySchema = new mongoose.Schema({
   name: {
@@ -33,6 +34,12 @@ const companySchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  employees: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   fields: {
     type: [String],
     required: [true, "comapny filed is a must"],

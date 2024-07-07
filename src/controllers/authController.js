@@ -32,14 +32,27 @@ const createToken = (user, statusCode, req, res) => {
 };
 
 exports.signUp = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-  });
+  let model;
 
-  createToken(newUser, 201, req, res);
+  if (req.body.companyFlag === 1) {
+    model = await Company.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      size: req.body.size,
+      field: req.body.fields,
+    });
+  } else {
+    model = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+    });
+  }
+
+  createToken(model, 201, req, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -56,8 +69,6 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!model) {
     model = await Company.findOne({ email }).select("+password");
   }
-
-  console.log(model);
 
   if (!model || !(await model.correctPassword(password, model.password))) {
     return next(new AppError("Incorrect email or password", 401));

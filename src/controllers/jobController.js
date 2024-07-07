@@ -26,7 +26,12 @@ exports.getAllJobs = catchAsync(async (req, res, next) => {
 
   // TODO = add more filtering options
 
-  const jobs = await Job.find(queryObj);
+  const jobs = await Job.find(queryObj)
+    .populate({
+      path: "company",
+      select: "name",
+    })
+    .exec();
 
   const theJobs = jobs.map((job) => ({
     name: job.name,
@@ -35,6 +40,7 @@ exports.getAllJobs = catchAsync(async (req, res, next) => {
     skills: job.skills,
     fields: job.fields,
     price: job.price,
+    _id: job._id,
   }));
 
   res.status(200).json({
@@ -104,10 +110,8 @@ exports.deleteJob = catchAsync(async (req, res, next) => {
 // ################################################################
 
 exports.createCompanyJob = catchAsync(async (req, res, next) => {
-  console.log(req.model);
+  req.body.company = req.model._id;
   const job = await Job.create(req.body);
-
-  console.log(req.model.jobs);
   await Company.updateOne({ _id: req.model._id }, { $push: { jobs: job._id } });
 
   return res.status(201).json({

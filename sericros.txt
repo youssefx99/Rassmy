@@ -13,7 +13,7 @@ User:
     - see it's info
     - see it's jobs (// redirect in the (*)route)
 
-- contact company (message go to HR)
+- contact company (message go to HR)  /
 
 - accept offer
 
@@ -35,7 +35,7 @@ Company:
 - see applications
 - accept application
 
-- see it's jobs (dont delete any previous jobs)
+- see it's jobs (don't delete any previous jobs)
 
 - see it's Employees
 - adjust employees data []

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const companyController = require("../controllers/companyController");
+const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
 const jobRouter = require("../routes/jobRoute");
 
@@ -18,6 +19,8 @@ router
   .get(companyController.getCompany)
   .patch(companyController.updateCompany)
   .delete(companyController.deleteCompany);
+
+router.post("/:id/contact", userController.contactCompany);
 
 router.get("/:jobId/applications", companyController.getJobAppliactions);
 router.get("/:jobId/accept", companyController.acceptApplication);
