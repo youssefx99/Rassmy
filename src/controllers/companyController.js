@@ -1,6 +1,8 @@
 const Company = require("../models/companyModel");
 const User = require("../models/userModel");
 const Job = require("../models/jobModel");
+const Application = require("../models/applicationModel");
+const Notafication = require("../models/noticationModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const returnRequest = require("../utils/returnRequest");
@@ -77,59 +79,77 @@ exports.adjustEmployee = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "User not found"));
   }
 
+  // notifacation
+  const message = `${newData} has been updated by ${model.name} check your profile please check updates`;
+  await Notafication.create({ user: id, message });
+
   // Call the correct function name with `res` as the first argument
   returnRequest(res, 200, "success", updatedUser);
 });
 
-exports.getJobAppliactions = catchAsync(async (req, res, next) => {
+exports.getJobApplications = catchAsync(async (req, res, next) => {
   const jobId = req.params.jobId;
-  const company = req.model;
+  const company = req.model; // Assuming company is attached to req.model
 
-  if (!company.jobs.includes(jobId))
-    return next(new AppError(404, "Company hasn't this Job ID"));
+  if (!company.jobs.includes(jobId)) {
+    return next(new AppError(404, "Company doesn't have this Job ID"));
+  }
 
   // Fetch the job by its ID and populate the 'appliedByUsers' field
   const job = await Job.findById(jobId).populate("appliedByUsers");
 
   if (!job) {
-    return returnRequest(res, 404, "error", "Job not found");
+    return next(new AppError(404, "Job not found"));
   }
 
-  const applications = job.appliedByUsers.map((user) => ({
-    userName: user.name,
-    email: user.email,
-    address: user.address,
-    company: user.company,
-    job: user.job,
-    fidld: user.field,
-    CV: user.CV,
+  // Retrieve applications for the job from the Application model
+  const applications = await Application.find({ job: jobId }).populate("user");
+
+  const formattedApplications = applications.map((application) => ({
+    userName: application.user.name,
+    email: application.user.email,
+    address: application.user.address,
+    company: application.user.company,
+    job: application.user.job,
+    field: application.user.field,
+    CV: application.user.CV,
   }));
 
-  return returnRequest(res, 200, "success", {
-    length: applications.length,
-    applications,
+  return res.status(200).json({
+    status: "success",
+    length: formattedApplications.length,
+    applications: formattedApplications,
   });
 });
 
 exports.acceptApplication = catchAsync(async (req, res, next) => {
-  const company = req.model;
+  const company = req.model; // Assuming company is attached to req.model
   const user = await User.findOne({ email: req.body.email });
   const job = await Job.findById(req.params.jobId);
 
   if (!user) {
-    return next(new AppError(404, "The usre is not an canditate for this job"));
+    return next(new AppError(404, "User not found"));
   }
 
   if (!job) {
     return next(new AppError(404, "Job not found"));
   }
 
-  user.job = job.tittle;
+  // Update user details
+  user.job = job.title;
   user.company = company.name;
   user.role = "employee";
   user.field = [...new Set([...user.field, ...job.fields])];
 
+  // Update company size
   company.size++;
+
+  // Create notification for the user
+  const userMessage = `You have been accepted for ${job.name} at ${company.name}`;
+  await Notification.create({
+    user: user._id,
+    message: userMessage,
+  });
 
   await user.save();
   await company.save({ validateBeforeSave: false });
@@ -156,9 +176,16 @@ exports.offerJobToUser = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "Job not found"));
   }
 
-  // Offer the job to the user (custom logic as needed)
+  // Offer the job to the user
   user.offeredJobs = user.offeredJobs || [];
   user.offeredJobs.push(job._id);
+
+  // Create notification for the user
+  const userMessage = `You have been offered the job ${job.name}`;
+  await Notification.create({
+    user: user._id,
+    message: userMessage,
+  });
 
   // Save the user
   await user.save();

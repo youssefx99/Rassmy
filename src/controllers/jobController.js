@@ -2,11 +2,14 @@ const Job = require("../models/jobModel");
 const Company = require("../models/companyModel");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
+const Application = require("../models/applicationModel");
 const AppError = require("../utils/appError");
 const { compare } = require("bcryptjs");
 
 exports.getJob = catchAsync(async (req, res, next) => {
   const job = await Job.findOne(req.body.id);
+
+  job.view++;
 
   return res.status(200).json({
     status: "success",
@@ -74,12 +77,46 @@ exports.getUserJobs = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createJob = catchAsync(async (req, res, next) => {
-  const job = await Job.create(req.body);
+exports.getJob = catchAsync(async (req, res, next) => {
+  const jobId = req.params.id;
 
-  return res.status(201).json({
+  // Find the job and populate necessary fields
+  const job = await Job.findById(jobId)
+    .populate({
+      path: "company",
+      select: "name",
+    })
+    .exec();
+
+  if (!job) {
+    return next(new AppError(404, "Job not found"));
+  }
+
+  // Find applications related to this job
+  const applications = await Application.find({ job: jobId }).populate(
+    "user",
+    "name"
+  );
+
+  // Construct response object
+  const jobWithApplications = {
+    _id: job._id,
+    name: job.name,
+    company: job.company,
+    description: job.description,
+    skills: job.skills,
+    fields: job.fields,
+    price: job.price,
+    applications: applications.map((app) => ({
+      user: app.user,
+      status: app.status,
+      applicationDate: app.applicationDate,
+    })),
+  };
+
+  res.status(200).json({
     status: "success",
-    data: job,
+    data: jobWithApplications,
   });
 });
 
@@ -152,6 +189,8 @@ exports.saveJob = catchAsync(async (req, res, next) => {
 
   await User.updateOne({ _id: userId }, { $push: { savedJobs: jobId } });
 
+  job.save++;
+
   return res.status(200).json({
     status: "success",
     message: "You saved on the job successfully",
@@ -163,19 +202,51 @@ exports.applyOnJob = catchAsync(async (req, res, next) => {
   const userId = req.model._id;
   const job = await Job.findById(jobId);
 
+  if (!job) {
+    return next(new AppError(404, "Job not found"));
+  }
+
   if (job.appliedByUsers.includes(userId)) {
     return next(new AppError(400, "You have already applied for this job"));
   }
 
-  await Job.updateOne({ _id: jobId }, { $push: { appliedByUsers: userId } });
+  // Create a new Application record with initial status "applied"
+  const application = await Application.create({
+    user: userId,
+    job: jobId,
+    status: "applied",
+  });
 
-  await User.updateOne({ _id: userId }, { $push: { applyedJobs: jobId } });
+  // Update job's appliedByUsers and statistics.apply
+  await Job.findByIdAndUpdate(jobId, {
+    $push: { appliedByUsers: userId },
+    $inc: { "statistics.apply": 1 },
+  });
 
-  // if apply before error
+  // Update user's applyedJobs
+  await User.findByIdAndUpdate(userId, { $push: { applyedJobs: jobId } });
+
+  // Create a notification for the user
+  const userNotificationMessage = `You applied for the job "${job.name}"`;
+  await Notification.create({ user: userId, message: userNotificationMessage });
+
+  // Find the company associated with the job
+  const company = await Company.findById(job.company);
+
+  if (!company) {
+    return next(new AppError(404, "Company not found"));
+  }
+
+  // Create a notification for the company
+  const companyNotificationMessage = `A user applied for your job "${job.name}"`;
+  await Notification.create({
+    user: company._id,
+    message: companyNotificationMessage,
+  });
 
   return res.status(200).json({
     status: "success",
-    message: "You Apply on the job successfully",
+    message: "You applied for the job successfully",
   });
 });
 
@@ -197,10 +268,33 @@ exports.shareJob = catchAsync(async (req, res, next) => {
   // Update user's sharedJobs
   await User.updateOne({ _id: user._id }, { $push: { sharedJobs: jobId } });
 
+  // Notafication
+  const message = `${user.name} has shared a job with you`;
+
+  await Notification.create({
+    user: user._id,
+    message,
+  });
+
   return res.status(200).json({
     status: "success",
     message: "Job shared successfully with user",
   });
 });
 
-exports.getApplicationStatus = catchAsync(async (req, res, next) => {});
+exports.getApplicationStatus = catchAsync(async (req, res, next) => {
+  const { jobId } = req.params;
+  const userId = req.model._id;
+
+  // Find the application for the given job and user
+  const application = await Application.findOne({ job: jobId, user: userId });
+
+  if (!application) {
+    return new AppError(404, "No application found for this job");
+  }
+
+  return res.status(200).json({
+    status: "success",
+    data: { status: application.status },
+  });
+});

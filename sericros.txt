@@ -48,20 +48,20 @@ Company:
 
 
 Features:
-- uplaod picture
-- uplaod links
+- uplaod picture            done in model 
+- uplaod links              done in model
 
-- Track application status
-- add notafication system
+- Track application status          /
+- add notafication system           /
 - follow company for jobs updates
 - 
 
 Job model updates:
-- job type [full time, part time]
-- location
-- salary range, not fixed price
+- job type [full time, part time]       /
+- location   
+- salary range, not fixed price         /
 
-- Track job post performance (views, applications).
+- Track job post performance (views, applications).     /
 
 - Real-time chat between users and companies.
 - Email and in-app notifications for key actions (job matches, application updates, messages).

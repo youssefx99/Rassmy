@@ -22,7 +22,7 @@ router
 
 router.post("/:id/contact", userController.contactCompany);
 
-router.get("/:jobId/applications", companyController.getJobAppliactions);
+router.get("/:jobId/applications", companyController.getJobApplications);
 router.get("/:jobId/accept", companyController.acceptApplication);
 
 router

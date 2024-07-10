@@ -7,7 +7,7 @@ Company Functions:
     - edit price, edit position, fire
 
 Advance:
-- offer on user a job   //
+- offer on user a job   /
 - message employee
 
 
