@@ -19,6 +19,7 @@
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.3.1",
     "helmet": "^7.1.0",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.3",
     "morgan": "^1.10.0",
@@ -27,6 +28,7 @@
     "nodemon": "^3.1.4",
     "pdf-parse": "^1.1.1",
     "validator": "^13.12.0",
+    "winston": "^3.13.0",
     "xss-clean": "^0.1.4"
   }
 }

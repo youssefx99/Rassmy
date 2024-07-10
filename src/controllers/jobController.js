@@ -147,9 +147,33 @@ exports.deleteJob = catchAsync(async (req, res, next) => {
 // ################################################################
 
 exports.createCompanyJob = catchAsync(async (req, res, next) => {
-  req.body.company = req.model._id;
+  const companyId = req.model._id; // Assuming req.model._id is the company's ID
+  req.body.company = companyId;
+
+  // Create the job
   const job = await Job.create(req.body);
-  await Company.updateOne({ _id: req.model._id }, { $push: { jobs: job._id } });
+
+  // Update the company's jobs list
+  await Company.updateOne({ _id: companyId }, { $push: { jobs: job._id } });
+
+  // Find the company's followers
+  const company = await Company.findById(companyId).populate("followers");
+
+  if (!company) {
+    return next(new AppError(404, "Company not found"));
+  }
+
+  // Notify each follower
+  const notificationPromises = company.followers.map(async (follower) => {
+    const notificationMessage = `New job posted by ${company.name}: "${job.name}"`;
+    await Notification.create({
+      user: follower._id,
+      message: notificationMessage,
+    });
+  });
+
+  // Wait for all notifications to be created
+  await Promise.all(notificationPromises);
 
   return res.status(201).json({
     status: "success",

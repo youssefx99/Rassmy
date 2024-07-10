@@ -40,6 +40,7 @@ const companySchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   fields: {
     type: [String],
     required: [true, "comapny filed is a must"],

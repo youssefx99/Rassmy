@@ -67,6 +67,7 @@ const userSchema = new mongoose.Schema({
     contentType: String,
     default: null,
   },
+  followedCompanies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,

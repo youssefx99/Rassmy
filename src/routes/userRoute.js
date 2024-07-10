@@ -24,7 +24,10 @@ router
   .patch(userController.updateUser)
   .delete(userController.deleteUser);
 
-
+router.post(
+  "/companies/:companyId/follow",
+  userController.followCompany
+);
 
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);

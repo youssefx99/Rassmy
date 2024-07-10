@@ -132,3 +132,32 @@ exports.contactCompany = catchAsync(async (req, res, next) => {
     message: "Email sent successfully to the company",
   });
 });
+
+exports.followCompany = catchAsync(async (req, res, next) => {
+  const companyId = req.params.companyId;
+  const userId = req.user._id;
+
+  // Check if the company exists
+  const company = await Company.findById(companyId);
+  if (!company) {
+    return next(new AppError(404, "Company not found"));
+  }
+
+  // Check if the user is already following the company
+  if (company.followers.includes(userId)) {
+    return next(new AppError(400, "You are already following this company"));
+  }
+
+  // Add user to the company's followers
+  await Company.findByIdAndUpdate(companyId, { $push: { followers: userId } });
+
+  // Add company to the user's followedCompanies
+  await User.findByIdAndUpdate(userId, {
+    $push: { followedCompanies: companyId },
+  });
+
+  res.status(200).json({
+    status: "success",
+    message: "You are now following the company for job updates",
+  });
+});

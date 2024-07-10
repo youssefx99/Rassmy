@@ -30,6 +30,7 @@ router
   .get(companyController.getCompanyEmployee)
   .patch(companyController.adjustEmployee);
 
+
 router.patch("/:jobId/offer", companyController.offerJobToUser);
 
 module.exports = router;

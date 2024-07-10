@@ -76,3 +76,9 @@ AI Secction:
 - 
 
 
+
+
+// Important 
+    - add joi validation
+    - add winston logs in database (mongo)
+    - 
