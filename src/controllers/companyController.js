@@ -137,7 +137,7 @@ exports.acceptApplication = catchAsync(async (req, res, next) => {
 
   // Update user details
   user.job = job.title;
-  user.company = company.name;
+  user.company = company._id;
   user.role = "employee";
   user.field = [...new Set([...user.field, ...job.fields])];
 
@@ -146,7 +146,9 @@ exports.acceptApplication = catchAsync(async (req, res, next) => {
 
   // Create notification for the user
   const userMessage = `You have been accepted for ${job.name} at ${company.name}`;
-  await Notification.create({
+
+  console.log(user);
+  await Notafication.create({
     user: user._id,
     message: userMessage,
   });

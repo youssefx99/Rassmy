@@ -63,9 +63,7 @@ const userSchema = new mongoose.Schema({
     },
   ],
   CV: {
-    type: Buffer,
-    contentType: String,
-    default: null,
+    type: String,
   },
   followedCompanies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
   passwordChangedAt: Date,

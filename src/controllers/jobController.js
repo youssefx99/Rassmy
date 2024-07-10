@@ -4,6 +4,7 @@ const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const Application = require("../models/applicationModel");
 const AppError = require("../utils/appError");
+const Notification = require("../models/noticationModel.js");
 const { compare } = require("bcryptjs");
 
 exports.getJob = catchAsync(async (req, res, next) => {
@@ -281,7 +282,7 @@ exports.shareJob = catchAsync(async (req, res, next) => {
   // Find user by email
   const user = await User.findOne({ email: email });
   if (!user) {
-    return next(new AppError(404, "User not found"));
+    return next(new AppError(404, "User you share with not found"));
   }
 
   // Check if the job is already shared with the user

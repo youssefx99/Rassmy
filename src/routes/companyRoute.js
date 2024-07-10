@@ -23,13 +23,12 @@ router
 router.post("/:id/contact", userController.contactCompany);
 
 router.get("/:jobId/applications", companyController.getJobApplications);
-router.get("/:jobId/accept", companyController.acceptApplication);
+router.post("/:jobId/accept", companyController.acceptApplication);
 
 router
   .route("/:companyName/employees")
   .get(companyController.getCompanyEmployee)
   .patch(companyController.adjustEmployee);
-
 
 router.patch("/:jobId/offer", companyController.offerJobToUser);
 

@@ -53,7 +53,7 @@ Features:
 
 - Track application status          /
 - add notafication system           /
-- follow company for jobs updates
+- follow company for jobs updates   /
 - 
 
 Job model updates:
@@ -81,4 +81,9 @@ AI Secction:
 // Important 
     - add joi validation
     - add winston logs in database (mongo)
-    - 
+
+
+
+// have to add:
+    - add the updated and new routes
+    - routes for application status tracking

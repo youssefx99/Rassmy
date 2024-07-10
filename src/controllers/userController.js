@@ -42,7 +42,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findOne(req.body.id);
+  const user = await User.findById(req.params.id);
 
   return res.status(200).json({
     status: "success",
@@ -161,3 +161,38 @@ exports.followCompany = catchAsync(async (req, res, next) => {
     message: "You are now following the company for job updates",
   });
 });
+
+// ##############################################################################################
+// const upload = require("../utils/multerConfig");
+// const parseCV = require("../utils/cvParser");
+
+// exports.uploadCV = upload.single("cv");
+
+// exports.autoFillProfile = catchAsync(async (req, res, next) => {
+//   console.log(req.file);
+//   if (!req.file) {
+//     return next(new AppError(400, "Please upload a CV"));
+//   }
+
+//   const filePath = req.file.path;
+//   const userId = req.user._id;
+
+//   // Parse the CV
+//   const info = await parseCV(filePath);
+
+//   // Update user profile
+//   const user = await User.findById(userId);
+//   if (info.name) user.name = info.name;
+//   if (info.email) user.email = info.email;
+//   if (info.address) user.address = info.address;
+//   user.CV = filePath;
+
+//   await user.save();
+
+//   res.status(200).json({
+//     status: "success",
+//     data: {
+//       user,
+//     },
+//   });
+// });
