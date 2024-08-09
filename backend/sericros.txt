@@ -1,0 +1,89 @@
+User:
+- signUp
+- Signin
+
+- adjust his profile & Data   **** CV auto fill
+
+- search for jobs ((*)filter them)
+- save job  - delete saved job
+- share job
+- apply on job
+
+- search for comapany
+    - see it's info
+    - see it's jobs (// redirect in the (*)route)
+
+- contact company (message go to HR)  /
+
+- accept offer
+
+- delete the user
+
+
+
+
+Company:
+- signUp
+- Signin
+
+- adjsut company profile & Data
+
+- post jobs
+- adjust posted job
+- delete job
+
+- see applications
+- accept application
+
+- see it's jobs (don't delete any previous jobs)
+
+- see it's Employees
+- adjust employees data []
+
+- send offer
+
+- delete comapany
+
+
+
+
+Features:
+- uplaod picture            done in model 
+- uplaod links              done in model
+
+- Track application status          /
+- add notafication system           /
+- follow company for jobs updates   /
+- 
+
+Job model updates:
+- job type [full time, part time]       /
+- location   
+- salary range, not fixed price         /
+
+- Track job post performance (views, applications).     /
+
+- Real-time chat between users and companies.
+- Email and in-app notifications for key actions (job matches, application updates, messages).
+- 
+
+
+
+AI Secction:
+- CV auto fill
+- Application Score to company
+- auto job description fill
+- 
+
+
+
+
+// Important 
+    - add joi validation
+    - add winston logs in database (mongo)
+
+
+
+// have to add:
+    - add the updated and new routes
+    - routes for application status tracking

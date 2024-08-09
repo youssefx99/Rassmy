@@ -1,0 +1,58 @@
+
+Company Functions:
+- show Employees    /
+- CRUD on jobs      /
+- show offers of jobs   /
+- adjust employee   
+    - edit price, edit position, fire
+
+Advance:
+- offer on user a job   /
+- message employee
+
+
+
+User Functions:
+- search Companies  /
+- see company info  /
+- search jobs & filter()    
+- search job of company /
+- save job  /
+- share job
+- apply on job  /
+- see it's offers and status
+
+Advance
+- see offered from comapany
+- message employee / company (HR, manger)
+
+
+
+Authentecation:
+- Sign Up /
+- Signin   /
+- logout    /
+- protect   /
+- isLogedIn 
+- restrictTo    /
+- update password /
+- Reset Password    /
+- forget Password   /
+
+
+
+
+Security
+cookies
+
+
+# Email functionsss
+-
+-
+-
+
+implpement async funcs   / 
+implpement errors funcs  /
+
+
+- add job title to job model to assign it to user when accepted in the job
