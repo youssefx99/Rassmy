@@ -33,7 +33,7 @@ const createToken = (user, statusCode, req, res) => {
 
 exports.signUp = catchAsync(async (req, res, next) => {
   let model;
-  console.log(req.body);
+
   if (req.body.companyFlag == 1) {
     model = await Company.create({
       name: req.body.name,
@@ -71,45 +71,12 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   if (!model || !(await model.correctPassword(password, model.password))) {
-    // return next(new AppError("Incorrect email or password", 401));
-    return res.status(401).json({
-      status: "fail",
-      message: "Incorrect email or password",
-    });
+    return next(new AppError("Incorrect email or password", 401));
   }
 
   // 3) If everything ok, send token to client
   createToken(model, 200, req, res);
 });
-// exports.login = async (req, res, next) => {
-//   const { email, password } = req.body;
-//
-//   // 1) Check if email and password exist
-//   if (!email || !password) {
-//     res.status(400).json({
-//         status: "fail",
-//         message: "Please provide email and password!",
-//     });
-//   }
-//
-//   let model;
-//   model = await User.findOne({ email }).select("+password");
-//
-//   if (!model) {
-//     model = await Company.findOne({ email }).select("+password");
-//   }
-//
-//   if (!model || !(await model.correctPassword(password, model.password))) {
-//     // return next(new AppError("Incorrect email or password", 401));
-//      res.status(401).json({
-//       status: "fail",
-//       message: "Incorrect email or password",
-//     });
-//   }
-//
-//   // 3) If everything ok, send token to client
-//   // createToken(model, 200, req, res);
-// }
 
 exports.logout = (req, res) => {
   res.cookie("jwt", "loggedout", {
@@ -122,7 +89,6 @@ exports.logout = (req, res) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it's there
-
   let token;
   if (
     req.headers.authorization &&
