@@ -34,14 +34,14 @@ const createToken = (user, statusCode, req, res) => {
 exports.signUp = catchAsync(async (req, res, next) => {
   let model;
 
-  if (req.body.companyFlag === 1) {
+  if (req.body.companyFlag == 1) {
     model = await Company.create({
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
       size: req.body.size,
-      field: req.body.fields,
+      fields: req.body.fields,
     });
   } else {
     model = await User.create({
